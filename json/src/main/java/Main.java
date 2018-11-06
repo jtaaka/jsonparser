@@ -9,14 +9,7 @@ public class Main {
         jsonObject.put("num", 1);
         jsonObject.put("true/false", true);
 
-        /*jsonObject.put("num", 100);
-        jsonObject.put("num2", 200);
-        jsonObject.put("balance", 1000.21);
-        jsonObject.put("is_vip", true);
-        jsonObject.put("array", new Object[]{1, 2, 3});*/
-
-
-        /*
+    /*
 
     {
       "firstName": "John",
@@ -47,6 +40,7 @@ public class Main {
       "spouse": null
     }
 
-         */
+    */
+
     }
 }
