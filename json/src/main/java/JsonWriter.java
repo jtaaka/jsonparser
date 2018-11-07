@@ -23,7 +23,7 @@ public class JsonWriter {
             for (Map.Entry<String, Object> entry : map.entrySet()) {
 
                 if (entry.getValue() instanceof String) {
-                        fileWriter.write(q + entry.getKey() + q + ":" + q + entry.getValue() + q + ", ");
+                        fileWriter.write(toJsonString(entry.getKey(), entry.getValue()));
                 } else {
                         fileWriter.write(q + entry.getKey() + q + ":" + entry.getValue() + ", ");
                 }
@@ -42,5 +42,9 @@ public class JsonWriter {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String toJsonString(String key, Object value) {
+        return String.format("\"%s\":\"%s\", ", key, value);
     }
 }
