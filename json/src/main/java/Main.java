@@ -3,11 +3,14 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
 
-        JsonObject jsonObject = new JsonObject();
-
+        /*JsonObject jsonObject = new JsonObject();
         jsonObject.put("name", "name");
         jsonObject.put("num", 1);
-        jsonObject.put("true/false", true);
+        jsonObject.put("true/false", true);*/
+
+        JsonArray jsonArray = new JsonArray();
+        jsonArray.add("testi");
+        jsonArray.add(1);
 
     /*
 
