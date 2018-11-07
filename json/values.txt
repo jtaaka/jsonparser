@@ -1,1 +1,1 @@
-["testi", 1]
+{"num":1, "name":"name", "true/false":true, "list":[1, String, 2]}

@@ -1,16 +1,28 @@
+import java.util.ArrayList;
+
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
 
-        /*JsonObject jsonObject = new JsonObject();
+        ArrayList list = new ArrayList();
+        list.add(1);
+        list.add("String");
+        list.add(2);
+
+
+        JsonObject jsonObject = new JsonObject();
         jsonObject.put("name", "name");
         jsonObject.put("num", 1);
-        jsonObject.put("true/false", true);*/
+        jsonObject.put("true/false", true);
+        jsonObject.put("list", list);
 
-        JsonArray jsonArray = new JsonArray();
+
+        /*JsonArray jsonArray = new JsonArray();
         jsonArray.add("testi");
-        jsonArray.add(1);
+        jsonArray.add(list);
+        jsonArray.add(1);*/
+
 
     /*
 

@@ -25,8 +25,6 @@ public class JsonWriter {
 
                 if (map.size() == index) {
                     fileWriter.write(lastObjectEntry(entry.getKey(), entry.getValue()));
-                } else if (entry.getValue() instanceof String) {
-                    fileWriter.write(toJsonString(entry.getKey(), entry.getValue()));
                 } else {
                     fileWriter.write(toJsonObject(entry.getKey(), entry.getValue()));
                 }
@@ -61,8 +59,6 @@ public class JsonWriter {
 
                 if (value == list.get(list.size() - 1)) {
                     fileWriter.write(lastArrayEntry(value));
-                } else if (value instanceof String) {
-                    fileWriter.write(toJsonArrayString(value));
                 } else {
                     fileWriter.write(toJsonArray(value));
                 }
@@ -86,16 +82,20 @@ public class JsonWriter {
     private String lastObjectEntry(String key, Object value) {
         if (value instanceof String) {
             return String.format("\"%s\":\"%s\"", key, value);
+        } else if (value instanceof ArrayList) {
+            return String.format("\"%s\":%s", key, value);
         }
 
         return String.format("\"%s\":%s", key, value);
     }
 
-    private String toJsonString(String key, Object value) {
-        return String.format("\"%s\":\"%s\", ", key, value);
-    }
-
     private String toJsonObject(String key, Object value) {
+        if (value instanceof String) {
+            return String.format("\"%s\":\"%s\", ", key, value);
+        } else if (value instanceof ArrayList) {
+            return String.format("\"%s\":%s, ", key, value);
+        }
+
         return String.format("\"%s\":%s, ", key, value);
     }
 
@@ -108,10 +108,10 @@ public class JsonWriter {
     }
 
     private String toJsonArray(Object value) {
-        return String.format("%s, ", value);
-    }
+        if (value instanceof String) {
+            return String.format("\"%s\", ", value);
+        }
 
-    private String toJsonArrayString(Object value) {
-        return String.format("\"%s\", ", value);
+        return String.format("%s, ", value);
     }
 }
