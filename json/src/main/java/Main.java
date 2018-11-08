@@ -1,28 +1,30 @@
-import java.util.ArrayList;
+import java.io.FileWriter;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
 
-        ArrayList list = new ArrayList();
-        list.add(1);
-        list.add("String");
-        list.add(2);
-
+        JsonArray jsonArray = new JsonArray();
+        jsonArray.add("String");
+        jsonArray.add(1);
+        jsonArray.add(1.1);
+        jsonArray.add(true);
+        jsonArray.add(null);
 
         JsonObject jsonObject = new JsonObject();
-        jsonObject.put("name", "name");
-        jsonObject.put("num", 1);
-        jsonObject.put("true/false", true);
-        jsonObject.put("list", list);
+        jsonObject.put("string", "name");
+        jsonObject.put("int", 1);
+        jsonObject.put("double", 1.5);
+        jsonObject.put("boolean", true);
+        jsonObject.put("null", null);
+        jsonObject.put("list", jsonArray);
 
-
-        /*JsonArray jsonArray = new JsonArray();
-        jsonArray.add("testi");
-        jsonArray.add(list);
-        jsonArray.add(1);*/
-
+        try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
+            writer.objectToJson(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     /*
 

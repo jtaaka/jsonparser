@@ -1,82 +1,45 @@
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
+import java.io.Writer;
+import java.util.*;
 
-public class JsonWriter {
-    private FileWriter fileWriter;
+public class JsonWriter implements AutoCloseable {
+    private Writer writer;
 
-    public JsonWriter() {
-
+    public JsonWriter(Writer writer) {
+        this.writer = writer;
     }
 
-    public void objectToJson(Map<String, Object> map) {
-        //Iterator<Map.Entry<String, Object>> entries = map.entrySet().iterator();
-
+    public void objectToJson(Map<String, Object> map) throws IOException {
         int index = 1;
 
-        fileWriter = null;
+        writer.write("{");
 
-        try {
-            fileWriter = new FileWriter("values.txt");
-            fileWriter.write("{");
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
 
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-
-                if (map.size() == index) {
-                    fileWriter.write(lastObjectEntry(entry.getKey(), entry.getValue()));
-                } else {
-                    fileWriter.write(toJsonObject(entry.getKey(), entry.getValue()));
-                }
-
-                index++;
+            if (map.size() == index) {
+                writer.write(lastObjectEntry(entry.getKey(), entry.getValue()));
+            } else {
+                writer.write(toJsonObject(entry.getKey(), entry.getValue()));
             }
 
-            fileWriter.write("}");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            index++;
         }
+
+        writer.write("}");
     }
 
-    public void arrayToJson(ArrayList<Object> list) {
+    public void arrayToJson(ArrayList<Object> list) throws IOException {
+        writer.write("[");
 
-        fileWriter = null;
-
-        try {
-            fileWriter = new FileWriter("values.txt");
-            fileWriter.write("[");
-
-            for (Object value : list) {
-
-                if (value == list.get(list.size() - 1)) {
-                    fileWriter.write(lastArrayEntry(value));
-                } else {
-                    fileWriter.write(toJsonArray(value));
-                }
-            }
-
-            fileWriter.write("]");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileWriter != null) {
-                    fileWriter.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        for (Object value : list) {
+            if (value == list.get(list.size() - 1)) {
+                writer.write(lastArrayEntry(value));
+            } else {
+                writer.write(toJsonArray(value));
             }
         }
+
+        writer.write("]");
     }
 
     private String lastObjectEntry(String key, Object value) {
@@ -93,6 +56,8 @@ public class JsonWriter {
         if (value instanceof String) {
             return String.format("\"%s\":\"%s\", ", key, value);
         } else if (value instanceof ArrayList) {
+
+
             return String.format("\"%s\":%s, ", key, value);
         }
 
@@ -113,5 +78,12 @@ public class JsonWriter {
         }
 
         return String.format("%s, ", value);
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (writer != null) {
+            writer.close();
+        }
     }
 }
