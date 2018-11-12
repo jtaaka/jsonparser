@@ -1,1 +1,1 @@
-["String", 1, 1.1, true, null]
+{"boolean":true, "string":"name", "null":null, "double":1.5, "list":["String", 1, 1.1, true, null], "int":1}

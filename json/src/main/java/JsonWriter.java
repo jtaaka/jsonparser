@@ -43,22 +43,56 @@ public class JsonWriter implements AutoCloseable {
     }
 
     private String lastObjectEntry(String key, Object value) {
+        String str = "";
+
         if (value instanceof String) {
-            return String.format("\"%s\":\"%s\"", key, value);
+            return String.format("\"%s\":\"%s\", ", key, value);
+
         } else if (value instanceof ArrayList) {
-            return String.format("\"%s\":%s", key, value);
+            str += String.format("\"%s\":[", key);
+
+            for (int i = 0; i < ((ArrayList) value).size(); i++) {
+
+                if (i == ((ArrayList) value).size() -1 && (((ArrayList) value).get(i)) instanceof String) {
+                    str += String.format("\"%s\"", (((ArrayList) value).get(i)));
+                } else if (i == ((ArrayList) value).size() -1) {
+                    str += String.format("%s", (((ArrayList) value).get(i)));
+                } else if ((((ArrayList) value).get(i)) instanceof String) {
+                    str += String.format("\"%s\", ", ((ArrayList) value).get(i));
+                } else {
+                    str += String.format("%s, ", (((ArrayList) value).get(i)));
+                }
+            }
+
+            return str + "]";
         }
 
         return String.format("\"%s\":%s", key, value);
     }
 
     private String toJsonObject(String key, Object value) {
+        String str = "";
+
         if (value instanceof String) {
             return String.format("\"%s\":\"%s\", ", key, value);
+
         } else if (value instanceof ArrayList) {
+            str += String.format("\"%s\":[", key);
 
+            for (int i = 0; i < ((ArrayList) value).size(); i++) {
 
-            return String.format("\"%s\":%s, ", key, value);
+                if (i == ((ArrayList) value).size() -1 && (((ArrayList) value).get(i)) instanceof String) {
+                    str += String.format("\"%s\"", (((ArrayList) value).get(i)));
+                } else if (i == ((ArrayList) value).size() -1) {
+                    str += String.format("%s", (((ArrayList) value).get(i)));
+                } else if ((((ArrayList) value).get(i)) instanceof String) {
+                    str += String.format("\"%s\", ", ((ArrayList) value).get(i));
+                } else {
+                    str += String.format("%s, ", (((ArrayList) value).get(i)));
+                }
+            }
+
+            return str + "], ";
         }
 
         return String.format("\"%s\":%s, ", key, value);
