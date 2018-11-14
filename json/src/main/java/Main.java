@@ -1,5 +1,8 @@
 import java.io.FileWriter;
 
+/**
+ * Main class of JSON parser.
+ */
 public class Main {
 
     public static void main(String[] args) {
