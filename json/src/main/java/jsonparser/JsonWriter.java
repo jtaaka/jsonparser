@@ -72,7 +72,7 @@ public class JsonWriter implements AutoCloseable {
      */
     private String lastObjectEntry(String key, Object value) {
         if (value instanceof String) {
-            return String.format("\"%s\":\"%s\", ", key, value);
+            return String.format("\"%s\":\"%s\"", key, value);
         } else if (value instanceof JsonArray) {
             return arrayObjectToString(key, (JsonArray)value);
         }
@@ -107,19 +107,6 @@ public class JsonWriter implements AutoCloseable {
      */
     private String arrayObjectToString(String key, JsonArray value) {
         StringBuilder str = new StringBuilder(String.format("\"%s\":[", key));
-
-        /*for (int i = 0; i < ((ArrayList) value).size(); i++) {
-
-            if (i == ((ArrayList) value).size() -1 && (((ArrayList) value).get(i)) instanceof String) {
-                str.append(String.format("\"%s\"", (((ArrayList) value).get(i))));
-            } else if (i == ((ArrayList) value).size() -1) {
-                str.append(String.format("%s", (((ArrayList) value).get(i))));
-            } else if ((((ArrayList) value).get(i)) instanceof String) {
-                str.append(String.format("\"%s\", ", ((ArrayList) value).get(i)));
-            } else {
-                str.append(String.format("%s, ", (((ArrayList) value).get(i))));
-            }
-        }*/
 
         boolean hasPrevious = false;
 
