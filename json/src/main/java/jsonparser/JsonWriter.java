@@ -1,3 +1,5 @@
+package jsonparser;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
@@ -9,7 +11,7 @@ public class JsonWriter implements AutoCloseable {
     private Writer writer;
 
     /**
-     * Constructs the JsonWriter class.
+     * Constructs the jsonparser.JsonWriter class.
      *
      * @param writer writer to write to txt file
      */
@@ -71,8 +73,8 @@ public class JsonWriter implements AutoCloseable {
     private String lastObjectEntry(String key, Object value) {
         if (value instanceof String) {
             return String.format("\"%s\":\"%s\", ", key, value);
-        } else if (value instanceof ArrayList) {
-            return arrayObjectToString(key, value);
+        } else if (value instanceof JsonArray) {
+            return arrayObjectToString(key, (JsonArray)value);
         }
 
         return String.format("\"%s\":%s", key, value);
@@ -89,8 +91,8 @@ public class JsonWriter implements AutoCloseable {
         if (value instanceof String) {
             return String.format("\"%s\":\"%s\", ", key, value);
 
-        } else if (value instanceof ArrayList) {
-            return arrayObjectToString(key, value) + ", ";
+        } else if (value instanceof JsonArray) {
+            return arrayObjectToString(key, (JsonArray)value) + ", ";
         }
 
         return String.format("\"%s\":%s, ", key, value);
@@ -103,12 +105,10 @@ public class JsonWriter implements AutoCloseable {
      * @param value Map value
      * @return formatted String of key and object
      */
-    private String arrayObjectToString(String key, Object value) {
-        StringBuilder str = new StringBuilder();
+    private String arrayObjectToString(String key, JsonArray value) {
+        StringBuilder str = new StringBuilder(String.format("\"%s\":[", key));
 
-        str.append(String.format("\"%s\":[", key));
-
-        for (int i = 0; i < ((ArrayList) value).size(); i++) {
+        /*for (int i = 0; i < ((ArrayList) value).size(); i++) {
 
             if (i == ((ArrayList) value).size() -1 && (((ArrayList) value).get(i)) instanceof String) {
                 str.append(String.format("\"%s\"", (((ArrayList) value).get(i))));
@@ -119,9 +119,24 @@ public class JsonWriter implements AutoCloseable {
             } else {
                 str.append(String.format("%s, ", (((ArrayList) value).get(i))));
             }
+        }*/
+
+        boolean hasPrevious = false;
+
+        for (Object object : value) {
+            if (hasPrevious) {
+                str.append(", ");
+            }
+            if (object instanceof String) {
+                str.append(String.format("\"%s\"", object));
+            } else {
+                str.append(object);
+            }
+
+            hasPrevious = true;
         }
 
-        return str + "]";
+        return str.append("]").toString();
     }
 
     /**

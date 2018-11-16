@@ -1,19 +1,27 @@
+import jsonparser.JsonArray;
+import jsonparser.JsonObject;
+import jsonparser.JsonWriter;
+
+import org.junit.*;
+
 import java.io.FileWriter;
 
 /**
- * Main class of JSON parser.
+ * UnitTest class of JSON parser.
  */
-public class Main {
+public class UnitTest {
 
-    public static void main(String[] args) {
-        System.out.println("Author: Juho Taakala");
-
+    @Test
+    public void main() {
         JsonArray jsonArray = new JsonArray();
         jsonArray.add("String");
         jsonArray.add(1);
         jsonArray.add(1.1);
         jsonArray.add(true);
         jsonArray.add(null);
+
+        Assert.assertTrue(jsonArray instanceof JsonArray);
+        Assert.assertEquals("String", jsonArray.get(0));
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.put("string", "name");
