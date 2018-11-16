@@ -88,7 +88,6 @@ public class Main extends Application {
         Scene scene = new Scene(grid, 800, 600);
         stage.setScene(scene);
         stage.show();
-        writeToJson();
     }
 
     public void writeToJson() {

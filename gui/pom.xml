@@ -32,7 +32,7 @@
                     <outputDirectory>../bin</outputDirectory>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptorRefs>
-                        <descriptorRef>jar-with-depenadencies</descriptorRef>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <archive>
                         <manifest>
