@@ -31,6 +31,9 @@ public class UnitTest {
         jsonObject.put("null", null);
         jsonObject.put("list", jsonArray);
 
+        Assert.assertTrue(jsonObject instanceof JsonObject);
+        Assert.assertEquals("name", jsonObject.get("string"));
+
         try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
             writer.objectToJson(jsonObject);
         } catch (Exception e) {
