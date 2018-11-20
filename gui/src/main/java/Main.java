@@ -18,9 +18,9 @@ import jsonparser.JsonWriter;
 import java.io.FileWriter;
 
 public class Main extends Application {
-    Stage stage;
-    TextField[] amountField;
-    TextField[] itemField;
+    private Stage stage;
+    private TextField[] amountField;
+    private TextField[] itemField;
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
