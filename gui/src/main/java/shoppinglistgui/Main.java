@@ -1,13 +1,12 @@
+package shoppinglistgui;
+
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -21,6 +20,7 @@ public class Main extends Application {
     private Stage stage;
     private TextField[] amountField;
     private TextField[] itemField;
+    private GridPane grid;
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
@@ -32,33 +32,34 @@ public class Main extends Application {
         stage = primaryStage;
         stage.setTitle("Shopping List");
 
-        GridPane grid = new GridPane();
+        grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setVgap(8);
         grid.setHgap(10);
+
+        TextArea allItems = new TextArea();
+        grid.add(allItems, 3, 1, 3, 10);
 
         Label shoppingList = new Label("Shopping List");
         shoppingList.setFont(new Font("Arial", 20));
         GridPane.setConstraints(shoppingList, 0, 0);
 
-        addItemLabels(grid);
-        addItemTextFields(grid);
-        addAmountTextFields(grid);
-        addButtons(grid);
+        addItemLabels();
+        addItemTextFields();
+        addAmountTextFields();
+        addButtons();
 
         grid.getChildren().addAll(shoppingList);
 
-        Scene scene = new Scene(grid, 800, 600);
+        Scene scene = new Scene(grid, 640, 480);
         stage.setScene(scene);
         stage.show();
     }
 
     /**
      * Adds all buttons to grid.
-     *
-     * @param grid GridPane
      */
-    public void addButtons(GridPane grid) {
+    public void addButtons() {
         Button addAll = new Button("Add all");
         addAll.setStyle("-fx-font: 16 arial; -fx-base: #b6e7c9;");
         GridPane.setConstraints(addAll, 0, 11);
@@ -94,10 +95,8 @@ public class Main extends Application {
 
     /**
      * Adds all item labels to grid.
-     *
-     * @param grid GridPane
      */
-    public void addItemLabels(GridPane grid) {
+    public void addItemLabels() {
         String[] items = {"Item 1:", "Item 2:", "Item 3:", "Item 4:", "Item 5:",
                 "Item 6:", "Item 7:", "Item 8:", "Item 9:", "Item 10:"};
 
@@ -111,10 +110,8 @@ public class Main extends Application {
 
     /**
      * Adds all amount textfields to grid.
-     *
-     * @param grid GridPane
      */
-    public void addAmountTextFields(GridPane grid) {
+    public void addAmountTextFields() {
         amountField = new TextField[10];
 
         for (int i = 0; i < 10; i++) {
@@ -128,10 +125,8 @@ public class Main extends Application {
 
     /**
      * Adds all item textfields to grid.
-     *
-     * @param grid GridPane
      */
-    public void addItemTextFields(GridPane grid) {
+    public void addItemTextFields() {
         itemField = new TextField[10];
 
         for (int i = 0; i < 10; i++) {
