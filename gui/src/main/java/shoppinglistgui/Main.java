@@ -21,6 +21,7 @@ public class Main extends Application {
     private TextField[] amountField;
     private TextField[] itemField;
     private GridPane grid;
+    private TextArea allItems;
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
@@ -37,7 +38,8 @@ public class Main extends Application {
         grid.setVgap(8);
         grid.setHgap(10);
 
-        TextArea allItems = new TextArea();
+        allItems = new TextArea();
+        allItems.setStyle("-fx-font: 14 arial;");
         grid.add(allItems, 3, 1, 3, 10);
 
         Label shoppingList = new Label("Shopping List");
@@ -76,8 +78,20 @@ public class Main extends Application {
             for (int i = 0; i < 10; i++) {
                 itemField[i].setText("");
                 amountField[i].setText("");
+                allItems.clear();
             }
         });
+
+        addAll.setOnAction(e ->  {
+            for (int i = 0; i < 10; i++) {
+                if (!itemField[i].getText().equals("")) {
+                    //allItems.setText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
+                    allItems.appendText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
+                }
+            }
+        });
+
+        saveToFile.setOnAction(e -> writeToJson());
 
         DropShadow shadow = new DropShadow();
 
@@ -138,26 +152,19 @@ public class Main extends Application {
         }
     }
 
-    /*public void writeToJson() {
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add("String");
-        jsonArray.add(1);
-        jsonArray.add(1.1);
-        jsonArray.add(true);
-        jsonArray.add(null);
-
+    public void writeToJson() {
         JsonObject jsonObject = new JsonObject();
-        jsonObject.put("string", "name");
-        jsonObject.put("int", 1);
-        jsonObject.put("double", 1.5);
-        jsonObject.put("boolean", true);
-        jsonObject.put("null", null);
-        jsonObject.put("list", jsonArray);
+
+        for (int i = 0; i < 10; i++) {
+            if (!itemField[i].getText().equals("") && !amountField[i].getText().equals("")) {
+                jsonObject.put(itemField[i].getText(), amountField[i].getText());
+            }
+        }
 
         try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
             writer.objectToJson(jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }
