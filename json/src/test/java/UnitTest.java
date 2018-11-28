@@ -22,6 +22,10 @@ public class UnitTest {
 
         Assert.assertTrue(jsonArray instanceof JsonArray);
         Assert.assertEquals("String", jsonArray.get(0));
+        Assert.assertEquals(1, jsonArray.get(1));
+        Assert.assertEquals(1.1, jsonArray.get(2));
+        Assert.assertEquals(true, jsonArray.get(3));
+        Assert.assertNull(jsonArray.get(4));
 
         JsonObject jsonObject = new JsonObject();
         jsonObject.put("string", "name");
@@ -33,6 +37,11 @@ public class UnitTest {
 
         Assert.assertTrue(jsonObject instanceof JsonObject);
         Assert.assertEquals("name", jsonObject.get("string"));
+        Assert.assertEquals(1, jsonObject.get("int"));
+        Assert.assertEquals(1.5, jsonObject.get("double"));
+        Assert.assertEquals(true, jsonObject.get("boolean"));
+        Assert.assertNull(jsonObject.get("null"));
+        Assert.assertEquals(jsonArray, jsonObject.get("list"));
 
         try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
             writer.objectToJson(jsonObject);

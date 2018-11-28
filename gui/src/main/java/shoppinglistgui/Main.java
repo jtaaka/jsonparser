@@ -10,7 +10,6 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import jsonparser.JsonArray;
 import jsonparser.JsonObject;
 import jsonparser.JsonWriter;
 
@@ -74,7 +73,7 @@ public class Main extends Application {
         saveToFile.setStyle("-fx-font: 16 arial; -fx-base: #c0c0c0;");
         GridPane.setConstraints(saveToFile, 2, 11);
 
-        removeAll.setOnAction(e ->  {
+        removeAll.setOnAction(action ->  {
             for (int i = 0; i < 10; i++) {
                 itemField[i].setText("");
                 amountField[i].setText("");
@@ -82,7 +81,7 @@ public class Main extends Application {
             }
         });
 
-        addAll.setOnAction(e ->  {
+        addAll.setOnAction(action ->  {
             for (int i = 0; i < 10; i++) {
                 if (!itemField[i].getText().equals("")) {
                     //allItems.setText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
@@ -91,7 +90,7 @@ public class Main extends Application {
             }
         });
 
-        saveToFile.setOnAction(e -> writeToJson());
+        saveToFile.setOnAction(action -> writeToJson());
 
         DropShadow shadow = new DropShadow();
 
