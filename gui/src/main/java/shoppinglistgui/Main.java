@@ -8,12 +8,13 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import jsonparser.JsonObject;
 import jsonparser.JsonWriter;
 
-import java.io.FileWriter;
+import java.io.*;
 
 public class Main extends Application {
     private Stage stage;
@@ -21,6 +22,9 @@ public class Main extends Application {
     private TextField[] itemField;
     private GridPane grid;
     private TextArea allItems;
+    private final int FIELDS = 10;
+    private File JsonFile;
+    private FileWriter fileWriter;
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
@@ -74,7 +78,7 @@ public class Main extends Application {
         GridPane.setConstraints(saveToFile, 2, 11);
 
         removeAll.setOnAction(action ->  {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < FIELDS; i++) {
                 itemField[i].setText("");
                 amountField[i].setText("");
                 allItems.clear();
@@ -82,15 +86,21 @@ public class Main extends Application {
         });
 
         addAll.setOnAction(action ->  {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < FIELDS; i++) {
                 if (!itemField[i].getText().equals("")) {
-                    //allItems.setText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
                     allItems.appendText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
                 }
             }
         });
 
-        saveToFile.setOnAction(action -> writeToJson());
+        saveToFile.setOnAction(action -> {
+            writeToJson();
+            try {
+                fileChooser();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         DropShadow shadow = new DropShadow();
 
@@ -127,7 +137,7 @@ public class Main extends Application {
     public void addAmountTextFields() {
         amountField = new TextField[10];
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
             textField.setPromptText("amount");
             GridPane.setConstraints(textField, 2, i + 1);
@@ -142,7 +152,7 @@ public class Main extends Application {
     public void addItemTextFields() {
         itemField = new TextField[10];
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
             textField.setPromptText("item");
             GridPane.setConstraints(textField, 1, i + 1);
@@ -151,19 +161,50 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * Writes shopping list items to txt file in JSON format.
+     */
     public void writeToJson() {
         JsonObject jsonObject = new JsonObject();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < FIELDS; i++) {
             if (!itemField[i].getText().equals("") && !amountField[i].getText().equals("")) {
                 jsonObject.put(itemField[i].getText(), amountField[i].getText());
             }
         }
 
-        try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
+        try (JsonWriter writer = new JsonWriter(fileWriter = new FileWriter(JsonFile = new File("values.txt")))) {
             writer.objectToJson(jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void fileChooser() throws IOException {
+        FileChooser fileChooser = new FileChooser();
+
+        /*//Set extension filter
+        FileChooser.ExtensionFilter extFilter =
+                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);*/
+
+        fileChooser.setInitialFileName("values.txt");
+
+        File fileToSave = fileChooser.showSaveDialog(stage);
+
+        BufferedReader reader = new BufferedReader(new FileReader(
+                JsonFile.getAbsolutePath()));
+
+        String line = reader.readLine();
+        SaveFile(line, fileToSave);
+        reader.close();
+
+    }
+
+    private void SaveFile(String content, File file) throws IOException {
+        FileWriter fileWriter;
+        fileWriter = new FileWriter(file);
+        fileWriter.write(content);
+        fileWriter.close();
     }
 }

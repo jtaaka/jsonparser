@@ -45,6 +45,8 @@ public class UnitTest {
 
         try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
             writer.objectToJson(jsonObject);
+            Assert.assertNotNull(writer);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
