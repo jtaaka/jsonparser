@@ -23,8 +23,7 @@ public class Main extends Application {
     private GridPane grid;
     private TextArea allItems;
     private final int FIELDS = 10;
-    private File JsonFile;
-    private FileWriter fileWriter;
+    private StringWriter stringWriter;
 
     public static void main(String[] args) {
         System.out.println("Author: Juho Taakala");
@@ -97,7 +96,7 @@ public class Main extends Application {
             writeToJson();
             try {
                 fileChooser();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         });
@@ -173,7 +172,7 @@ public class Main extends Application {
             }
         }
 
-        try (JsonWriter writer = new JsonWriter(fileWriter = new FileWriter(JsonFile = new File("values.txt")))) {
+        try (JsonWriter writer = new JsonWriter(stringWriter = new StringWriter())) {
             writer.objectToJson(jsonObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,28 +181,13 @@ public class Main extends Application {
 
     public void fileChooser() throws IOException {
         FileChooser fileChooser = new FileChooser();
-
-        /*//Set extension filter
-        FileChooser.ExtensionFilter extFilter =
-                new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);*/
-
-        fileChooser.setInitialFileName("values.txt");
-
+        fileChooser.setInitialFileName("ShoppingList.txt");
         File fileToSave = fileChooser.showSaveDialog(stage);
-
-        BufferedReader reader = new BufferedReader(new FileReader(
-                JsonFile.getAbsolutePath()));
-
-        String line = reader.readLine();
-        SaveFile(line, fileToSave);
-        reader.close();
-
+        SaveFile(stringWriter.toString(), fileToSave);
     }
 
     private void SaveFile(String content, File file) throws IOException {
-        FileWriter fileWriter;
-        fileWriter = new FileWriter(file);
+        FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(content);
         fileWriter.close();
     }
