@@ -11,7 +11,7 @@ public class JsonWriter implements AutoCloseable {
     private Writer writer;
 
     /**
-     * Constructs the jsonparser.JsonWriter class.
+     * Constructs the JsonWriter class.
      *
      * @param writer writer to write to txt file
      */
