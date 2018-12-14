@@ -1,5 +1,11 @@
 package shoppinglistgui;
 
+import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxAuthFinish;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.DbxWebAuth;
+import com.dropbox.core.v2.DbxClientV2;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -12,10 +18,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jsonparser.JsonObject;
 import jsonparser.JsonWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.awt.*;
+import java.io.*;
+import java.net.URL;
+import java.util.Optional;
 
 /**
  * A class that contains all of the GUI stuff.
@@ -28,9 +34,13 @@ public class Gui {
     private TextArea allItems;
     private final int FIELDS = 10;
     private StringWriter stringWriter;
-    private Button addAll;
-    private Button removeAll;
-    private Button saveToFile;
+    private Button addAllButton;
+    private Button removeAllButton;
+    private Button saveToFileButton;
+    private Button saveToDropboxButton;
+
+    private static final String APP_KEY = "6fmddnkhrmvj2e9";
+    private static final String APP_SECRET = "wvm32mdauu7hfiy";
 
     /**
      * Constructs the Gui class.
@@ -63,26 +73,30 @@ public class Gui {
      * Adds all buttons to grid.
      */
     private void addButtons() {
-        addAll = new Button("Add all");
-        addAll.setStyle("-fx-font: 16 arial; -fx-base: #b6e7c9;");
-        GridPane.setConstraints(addAll, 0, 11);
+        addAllButton = new Button("Add all");
+        addAllButton.setStyle("-fx-font: 16 arial; -fx-base: #b6e7c9;");
+        GridPane.setConstraints(addAllButton, 0, 11);
 
-        removeAll = new Button("Remove all");
-        removeAll.setStyle("-fx-font: 16 arial; -fx-base: #f08080;");
-        GridPane.setConstraints(removeAll, 1, 11);
+        removeAllButton = new Button("Remove all");
+        removeAllButton.setStyle("-fx-font: 16 arial; -fx-base: #f08080;");
+        GridPane.setConstraints(removeAllButton, 1, 11);
 
-        saveToFile = new Button("Save to file");
-        saveToFile.setStyle("-fx-font: 16 arial; -fx-base: #c0c0c0;");
-        GridPane.setConstraints(saveToFile, 2, 11);
+        saveToFileButton = new Button("Save to file");
+        saveToFileButton.setStyle("-fx-font: 16 arial; -fx-base: #c0c0c0;");
+        GridPane.setConstraints(saveToFileButton, 2, 11);
 
-        grid.getChildren().addAll(addAll, removeAll, saveToFile);
+        saveToDropboxButton = new Button("Save to Dropbox");
+        saveToDropboxButton.setStyle("-fx-font: 16 arial; -fx-base: #0061fe;");
+        GridPane.setConstraints(saveToDropboxButton, 3, 11);
+
+        grid.getChildren().addAll(addAllButton, removeAllButton, saveToFileButton, saveToDropboxButton);
     }
 
     /**
      * Adds all actions to buttons.
      */
     private void addButtonActions() {
-        removeAll.setOnAction(action ->  {
+        removeAllButton.setOnAction(action ->  {
             for (int i = 0; i < FIELDS; i++) {
                 itemField[i].setText("");
                 amountField[i].setText("");
@@ -90,7 +104,7 @@ public class Gui {
             }
         });
 
-        addAll.setOnAction(action ->  {
+        addAllButton.setOnAction(action ->  {
             for (int i = 0; i < FIELDS; i++) {
                 if (!itemField[i].getText().equals("")) {
                     allItems.appendText(itemField[i].getText() + " " + amountField[i].getText() + "\n");
@@ -98,7 +112,7 @@ public class Gui {
             }
         });
 
-        saveToFile.setOnAction(action -> {
+        saveToFileButton.setOnAction(action -> {
             writeToJson();
             try {
                 fileChooser();
@@ -107,16 +121,28 @@ public class Gui {
             }
         });
 
+        saveToDropboxButton.setOnAction(action -> {
+            writeToJson();
+            try {
+                saveToDropbox();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         DropShadow shadow = new DropShadow();
 
-        addAll.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> addAll.setEffect(shadow));
-        addAll.addEventHandler(MouseEvent.MOUSE_EXITED, e -> addAll.setEffect(null));
+        addAllButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> addAllButton.setEffect(shadow));
+        addAllButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> addAllButton.setEffect(null));
 
-        removeAll.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> removeAll.setEffect(shadow));
-        removeAll.addEventHandler(MouseEvent.MOUSE_EXITED, e -> removeAll.setEffect(null));
+        removeAllButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> removeAllButton.setEffect(shadow));
+        removeAllButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> removeAllButton.setEffect(null));
 
-        saveToFile.addEventHandler(MouseEvent.MOUSE_ENTERED, e -> saveToFile.setEffect(shadow));
-        saveToFile.addEventHandler(MouseEvent.MOUSE_EXITED, e -> saveToFile.setEffect(null));
+        saveToFileButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> saveToFileButton.setEffect(shadow));
+        saveToFileButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> saveToFileButton.setEffect(null));
+
+        saveToDropboxButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> saveToDropboxButton.setEffect(shadow));
+        saveToDropboxButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> saveToDropboxButton.setEffect(null));
     }
 
     /**
@@ -206,5 +232,38 @@ public class Gui {
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(content);
         fileWriter.close();
+    }
+
+    private void saveToDropbox() throws Exception {
+        DbxRequestConfig config = new DbxRequestConfig("ShoppingList");
+
+        DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
+        DbxWebAuth webAuth = new DbxWebAuth(config, appInfo);
+        DbxWebAuth.Request webAuthRequest = DbxWebAuth.newRequestBuilder()
+                .withNoRedirect()
+                .build();
+
+        String url = webAuth.authorize(webAuthRequest);
+
+        Desktop.getDesktop().browse(new URL(url).toURI());
+
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Upload to Dropbox");
+        dialog.setHeaderText("Sign in to Dropbox and click \"Allow\" in browser");
+        dialog.setContentText("Please enter your access code:");
+
+        Optional<String> result = dialog.showAndWait();
+        System.out.println(dialog.showAndWait());
+
+        if (result.isPresent()) {
+            String code = result.get();
+            DbxAuthFinish authFinish = webAuth.finishFromCode(code);
+            String accessToken = authFinish.getAccessToken();
+
+            DbxClientV2 client = new DbxClientV2(config, accessToken);
+            String fileContents = stringWriter.toString();
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
+            client.files().uploadBuilder("/ShoppingList.txt").uploadAndFinish(inputStream);
+        }
     }
 }

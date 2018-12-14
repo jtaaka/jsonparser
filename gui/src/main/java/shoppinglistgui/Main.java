@@ -1,10 +1,22 @@
 package shoppinglistgui;
 
+import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxAuthFinish;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.DbxWebAuth;
+import com.dropbox.core.v2.DbxClientV2;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.net.URL;
+import java.util.Optional;
 
 /**
  * Main class of the shopping list application.
