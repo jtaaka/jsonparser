@@ -32,7 +32,7 @@ public class Gui {
     private TextField[] itemField;
     private GridPane grid;
     private TextArea allItems;
-    private final int FIELDS = 10;
+    private final int FIELDS = 15;
     private StringWriter stringWriter;
     private Button addAllButton;
     private Button removeAllButton;
@@ -54,19 +54,17 @@ public class Gui {
 
         allItems = new TextArea();
         allItems.setStyle("-fx-font: 14 arial;");
-        grid.add(allItems, 3, 1, 3, 10);
+        grid.add(allItems, 3, 1, 3, 15);
 
-        Label shoppingList = new Label("Shopping List");
-        shoppingList.setFont(new Font("Arial", 20));
-        GridPane.setConstraints(shoppingList, 0, 0);
+        Label shoppingListLabel = new Label("Shopping List");
+        shoppingListLabel.setFont(new Font("Arial", 20));
+        grid.add(shoppingListLabel, 2, 0, 1, 1);
 
         addItemLabels();
         addItemTextFields();
         addAmountTextFields();
         addButtons();
         addButtonActions();
-
-        grid.getChildren().addAll(shoppingList);
     }
 
     /**
@@ -74,20 +72,20 @@ public class Gui {
      */
     private void addButtons() {
         addAllButton = new Button("Add all");
-        addAllButton.setStyle("-fx-font: 16 arial; -fx-base: #b6e7c9;");
-        GridPane.setConstraints(addAllButton, 0, 11);
+        addAllButton.setStyle("-fx-font: 16 arial; -fx-base: #0a8a0a;");
+        GridPane.setConstraints(addAllButton, 0, 16);
 
         removeAllButton = new Button("Remove all");
-        removeAllButton.setStyle("-fx-font: 16 arial; -fx-base: #f08080;");
-        GridPane.setConstraints(removeAllButton, 1, 11);
+        removeAllButton.setStyle("-fx-font: 16 arial; -fx-base: #ff3c3c;");
+        GridPane.setConstraints(removeAllButton, 1, 16);
 
         saveToFileButton = new Button("Save to file");
-        saveToFileButton.setStyle("-fx-font: 16 arial; -fx-base: #c0c0c0;");
-        GridPane.setConstraints(saveToFileButton, 2, 11);
+        saveToFileButton.setStyle("-fx-font: 16 arial; -fx-base: #8a8a8a");
+        GridPane.setConstraints(saveToFileButton, 2, 16);
 
         saveToDropboxButton = new Button("Save to Dropbox");
         saveToDropboxButton.setStyle("-fx-font: 16 arial; -fx-base: #0061fe;");
-        GridPane.setConstraints(saveToDropboxButton, 3, 11);
+        GridPane.setConstraints(saveToDropboxButton, 3, 16);
 
         grid.getChildren().addAll(addAllButton, removeAllButton, saveToFileButton, saveToDropboxButton);
     }
@@ -150,7 +148,8 @@ public class Gui {
      */
     private void addItemLabels() {
         String[] items = {"Item 1:", "Item 2:", "Item 3:", "Item 4:", "Item 5:",
-                "Item 6:", "Item 7:", "Item 8:", "Item 9:", "Item 10:"};
+                "Item 6:", "Item 7:", "Item 8:", "Item 9:", "Item 10:",
+                "Item 11:", "Item 12:", "Item 13:", "Item 14:", "Item 15:"};
 
         for (int i = 0; i < items.length; i++) {
             Label itemLabel = new Label(items[i]);
@@ -164,7 +163,7 @@ public class Gui {
      * Adds all amount textfields to grid.
      */
     private void addAmountTextFields() {
-        amountField = new TextField[10];
+        amountField = new TextField[15];
 
         for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
@@ -179,7 +178,7 @@ public class Gui {
      * Adds all item textfields to grid.
      */
     private void addItemTextFields() {
-        itemField = new TextField[10];
+        itemField = new TextField[15];
 
         for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
@@ -216,7 +215,7 @@ public class Gui {
      */
     private void fileChooser() throws IOException {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialFileName("ShoppingList.txt");
+        fileChooser.setInitialFileName("ShoppingList.json");
         File fileToSave = fileChooser.showSaveDialog(stage);
         SaveFile(stringWriter.toString(), fileToSave);
     }
@@ -234,6 +233,11 @@ public class Gui {
         fileWriter.close();
     }
 
+    /**
+     * Uploads the shopping list file file to Dropbox.
+     *
+     * @throws Exception exception
+     */
     private void saveToDropbox() throws Exception {
         DbxRequestConfig config = new DbxRequestConfig("ShoppingList");
 
@@ -253,17 +257,16 @@ public class Gui {
         dialog.setContentText("Please enter your access code:");
 
         Optional<String> result = dialog.showAndWait();
-        System.out.println(dialog.showAndWait());
 
         if (result.isPresent()) {
-            String code = result.get();
-            DbxAuthFinish authFinish = webAuth.finishFromCode(code);
+            String accessCode = result.get();
+            DbxAuthFinish authFinish = webAuth.finishFromCode(accessCode);
             String accessToken = authFinish.getAccessToken();
 
             DbxClientV2 client = new DbxClientV2(config, accessToken);
             String fileContents = stringWriter.toString();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
-            client.files().uploadBuilder("/ShoppingList.txt").uploadAndFinish(inputStream);
+            client.files().uploadBuilder("/ShoppingList.json").uploadAndFinish(inputStream);
         }
     }
 }
