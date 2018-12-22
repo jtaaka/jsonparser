@@ -192,7 +192,7 @@ public class Gui {
     }
 
     /**
-     * Writes shopping list items to string in JSON format.
+     * Writes shopping list items and amounts to String in JSON format.
      */
     private void writeToJson() {
         JsonObject jsonObject = new JsonObject();
