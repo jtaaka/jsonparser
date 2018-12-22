@@ -192,7 +192,7 @@ public class Gui {
     }
 
     /**
-     * Writes shopping list items to txt file in JSON format.
+     * Writes shopping list items to string in JSON format.
      */
     private void writeToJson() {
         JsonObject jsonObject = new JsonObject();
@@ -211,7 +211,7 @@ public class Gui {
     }
 
     /**
-     * Opens up a file chooser for the ShoppingList.txt.
+     * Opens up a file chooser for the ShoppingList.json file.
      *
      * @throws IOException exception
      */
