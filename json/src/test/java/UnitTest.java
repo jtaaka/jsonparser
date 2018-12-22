@@ -43,7 +43,7 @@ public class UnitTest {
         Assert.assertNull(jsonObject.get("null"));
         Assert.assertEquals(jsonArray, jsonObject.get("list"));
 
-        try (JsonWriter writer = new JsonWriter(new FileWriter("values.txt"))) {
+        try (JsonWriter writer = new JsonWriter(new FileWriter("values.json"))) {
             writer.objectToJson(jsonObject);
             Assert.assertNotNull(writer);
 

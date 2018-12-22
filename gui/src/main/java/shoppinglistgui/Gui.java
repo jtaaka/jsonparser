@@ -128,19 +128,21 @@ public class Gui {
             }
         });
 
+        shadowEffect(addAllButton);
+        shadowEffect(removeAllButton);
+        shadowEffect(saveToFileButton);
+        shadowEffect(saveToDropboxButton);
+    }
+
+    /**
+     * Adds a shadow effect to a button.
+     *
+     * @param button button
+     */
+    private void shadowEffect(Button button) {
         DropShadow shadow = new DropShadow();
-
-        addAllButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> addAllButton.setEffect(shadow));
-        addAllButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> addAllButton.setEffect(null));
-
-        removeAllButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> removeAllButton.setEffect(shadow));
-        removeAllButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> removeAllButton.setEffect(null));
-
-        saveToFileButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> saveToFileButton.setEffect(shadow));
-        saveToFileButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> saveToFileButton.setEffect(null));
-
-        saveToDropboxButton.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> saveToDropboxButton.setEffect(shadow));
-        saveToDropboxButton.addEventHandler(MouseEvent.MOUSE_EXITED, action -> saveToDropboxButton.setEffect(null));
+        button.addEventHandler(MouseEvent.MOUSE_ENTERED, action -> button.setEffect(shadow));
+        button.addEventHandler(MouseEvent.MOUSE_EXITED, action -> button.setEffect(null));
     }
 
     /**
@@ -233,8 +235,11 @@ public class Gui {
         fileWriter.close();
     }
 
+    private boolean uploaded = false;
+    private int version;
+
     /**
-     * Uploads the shopping list file file to Dropbox.
+     * Uploads the shopping list file to Dropbox.
      *
      * @throws Exception exception
      */
@@ -243,9 +248,7 @@ public class Gui {
 
         DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
         DbxWebAuth webAuth = new DbxWebAuth(config, appInfo);
-        DbxWebAuth.Request webAuthRequest = DbxWebAuth.newRequestBuilder()
-                .withNoRedirect()
-                .build();
+        DbxWebAuth.Request webAuthRequest = DbxWebAuth.newRequestBuilder().withNoRedirect().build();
 
         String url = webAuth.authorize(webAuthRequest);
 
@@ -266,7 +269,14 @@ public class Gui {
             DbxClientV2 client = new DbxClientV2(config, accessToken);
             String fileContents = stringWriter.toString();
             ByteArrayInputStream inputStream = new ByteArrayInputStream(fileContents.getBytes());
-            client.files().uploadBuilder("/ShoppingList.json").uploadAndFinish(inputStream);
+
+            if (!uploaded) {
+                client.files().uploadBuilder("/ShoppingList.json").uploadAndFinish(inputStream);
+                uploaded = true;
+            } else {
+                version++;
+                client.files().uploadBuilder("/ShoppingList" + version + ".json").uploadAndFinish(inputStream);
+            }
         }
     }
 }
