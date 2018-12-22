@@ -149,12 +149,8 @@ public class Gui {
      * Adds all item labels to grid.
      */
     private void addItemLabels() {
-        String[] items = {"Item 1:", "Item 2:", "Item 3:", "Item 4:", "Item 5:",
-                "Item 6:", "Item 7:", "Item 8:", "Item 9:", "Item 10:",
-                "Item 11:", "Item 12:", "Item 13:", "Item 14:", "Item 15:"};
-
-        for (int i = 0; i < items.length; i++) {
-            Label itemLabel = new Label(items[i]);
+        for (int i = 0; i <= FIELDS; i++) {
+            Label itemLabel = new Label("Item " + (i + 1) + ":");
             itemLabel.setFont(new Font("Arial", 16));
             GridPane.setConstraints(itemLabel, 0, i + 1);
             grid.getChildren().add(itemLabel);
@@ -165,7 +161,7 @@ public class Gui {
      * Adds all amount textfields to grid.
      */
     private void addAmountTextFields() {
-        amountField = new TextField[15];
+        amountField = new TextField[FIELDS];
 
         for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
@@ -180,7 +176,7 @@ public class Gui {
      * Adds all item textfields to grid.
      */
     private void addItemTextFields() {
-        itemField = new TextField[15];
+        itemField = new TextField[FIELDS];
 
         for (int i = 0; i < FIELDS; i++) {
             TextField textField = new TextField();
